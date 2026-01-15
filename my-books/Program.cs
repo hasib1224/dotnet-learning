@@ -1,3 +1,7 @@
+using Microsoft.EntityFrameworkCore;
+using my_books.Data;
+using my_books.Data.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -5,7 +9,17 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(C =>
+{
+    C.SwaggerDoc("v2", new Microsoft.OpenApi.Models.OpenApiInfo { Title = "my_books_updated", Version = "v2" });
+});
+
+// Register the DbContext
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnectionString")));
+
+//Configure services
+builder.Services.AddTransient<BooksService>();
 
 var app = builder.Build();
 
@@ -13,7 +27,7 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c=>c.SwaggerEndpoint("/swagger/v2/swagger.json", "my_books"));
 }
 
 app.UseHttpsRedirection();
@@ -21,5 +35,7 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+AppDbInitializer.Seed(app);
 
 app.Run();
