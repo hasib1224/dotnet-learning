@@ -14,6 +14,11 @@
         public required string CoverUrl { get; set; }
         public required DateTime DateAdded { get; set; }
 
+        //Navigation Property
+        public int PublisherId { get; set; }
+        public Publisher Publisher { get; set; }
+
+        public List<Book_Author> Book_Authors { get; set; }
 
     }
-}
+} 

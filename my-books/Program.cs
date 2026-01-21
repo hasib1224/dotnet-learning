@@ -20,6 +20,9 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 //Configure services
 builder.Services.AddTransient<BooksService>();
+builder.Services.AddTransient<PublisherService>();
+builder.Services.AddTransient<AuthorService>();
+
 
 var app = builder.Build();
 
